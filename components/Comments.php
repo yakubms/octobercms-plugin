@@ -68,7 +68,6 @@ class Comments extends ComponentBase
             'site_key' => Settings::get('site_key', false)
 
         ];
-
     }
 
     /**
@@ -82,7 +81,7 @@ class Comments extends ComponentBase
         if (Settings::get('recaptcha_enabled')) {
             $this->addJs('https://www.google.com/recaptcha/api.js');
         }
-        $this->posts = $this->page['posts'] = $this->listPosts();       
+        $this->posts = $this->page['posts'] = $this->listPosts();
     }
 
     /**
@@ -95,7 +94,7 @@ class Comments extends ComponentBase
         ];
 
         if (!Auth::check()) {
-            $formValidation['email'] = 'required|email';
+            // $formValidation['email'] = 'required|email';
             $formValidation['author'] = 'required|alpha|min:2|max:25';
         }
 
@@ -118,7 +117,6 @@ class Comments extends ComponentBase
         }
 
         return $this->saveComment();
-
     }
 
     /**
@@ -130,8 +128,8 @@ class Comments extends ComponentBase
         $model->content = strip_tags(post('content'));
         $model->url = $this->url;
         $parent_id = post('parent_id');
-        if(is_numeric($parent_id)){
-            $model->parent_id = $parent_id; 
+        if (is_numeric($parent_id)) {
+            $model->parent_id = $parent_id;
         }
 
         if (Settings::get('allow_guest')) {
@@ -201,5 +199,4 @@ class Comments extends ComponentBase
         $response = file_get_contents($url . '?' . http_build_query($q));
         return json_decode($response, true);
     }
-
 }
