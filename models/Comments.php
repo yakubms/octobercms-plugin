@@ -1,9 +1,9 @@
-<?php 
+<?php
 
 namespace SaurabhDhariwal\Comments\Models;
 
-
 use Model;
+use RainLab\Blog\Models\Post;
 
 /**
  * Model
@@ -79,10 +79,28 @@ class Comments extends Model
      */
     public function getNameAttribute()
     {
-        if($this->author != ""){
+        if ($this->author != "") {
             return $this->author;
         } elseif ($this->user) {
             return $this->user->name;
-        }    
+        }
+    }
+
+    public function title()
+    {
+        $slug = str_replace('post/', '', $this->url);
+        return Post::whereSlug($slug)->first()->title;
+    }
+
+    public function getRecentComments($number)
+    {
+        return Comments::orderBy('updated_at', 'desc')->take($number)->get()->map(function ($el) {
+            return [
+            'id' => $el->id,
+            'author' => $el->author,
+            'date' => $el->updated_at->toDateString(),
+            'url' => $el->url,
+            'title' => $el->title()];
+        })->toArray();
     }
 }
